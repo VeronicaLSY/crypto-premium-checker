@@ -5,12 +5,11 @@ const binance = new Binance(); // new constructor
 require("dotenv").config();
 
 async function lunoProcess() {
-  const alignment = "text-align: right"
   // BTCMYR price from luno:
   const luno = await fetch("https://api.luno.com/api/1/ticker?pair=XBTMYR");
   const lunoResult = await luno.json();
   const btcMyr = Math.trunc(lunoResult.last_trade);
-  console.log(`%c BTCMYR price on Luno: MYR ${btcMyr}`, alignment);
+  console.log(`BTCMYR price on Luno:`.padEnd(30) + `MYR ${btcMyr}`);
   
   // Exchange rate: 
   const myHeaders = new Headers();
@@ -23,24 +22,24 @@ async function lunoProcess() {
     const conv = await fetch ("https://api.apilayer.com/fixer/latest?symbols=MYR&base=USD", requestOptions);
     const convResult = await conv.json();
     const rate = convResult.rates.MYR;
-    console.log(`%c USDMYR: ${rate}`, alignment);
+    console.log(`USDMYR:`.padEnd(30) + `${rate}`);
 
   // BTCUSD price on Luno:
   const btcUsd = btcMyr/rate;
-  console.log(`%c BTCUSD price on Luno: USD ${btcUsd}`, alignment);
+  console.log(`BTCUSD price on Luno:`.padEnd(30) + `USD ${btcUsd}`);
   
   // BTCUSD price on Binance:
   const ticker = await binance.prices();
   const btcbUsd = ticker.BTCUSDT;
-  console.log(`%c BTCUSD price on Binance: USD ${btcbUsd}`, alignment);
+  console.log(`BTCUSD price on Binance:`.padEnd(30) + `USD ${btcbUsd}`);
   
   // Price difference:
   const priceDiff = btcUsd - ticker.BTCUSDT;
-  console.log(`%c Price difference: USD ${priceDiff}`, alignment);
+  console.log(`Price difference:`.padEnd(30) + `USD ${priceDiff}`);
 
   // Luno premium:
   const lunopremium = (priceDiff/btcbUsd).toFixed(4);
-  console.log(`%c Luno premium: ${lunopremium}%`, alignment);
+  console.log(`Luno premium:`.padEnd(30) + `${lunopremium}%`);
 }
 
 lunoProcess();
