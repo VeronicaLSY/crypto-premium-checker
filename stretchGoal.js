@@ -1,10 +1,12 @@
 // npm install -s node-binance-api
 // npm install dotenv
 // npm install prompt-sync // NEW
-const Binance = require('node-binance-api'); // making API calls to Binance
-const binance = new Binance(); // new constructor
-require("dotenv").config();
-const prompt = require('prompt-sync')({sigint: true}); // NEW
+import Binance from 'node-binance-api'; // making API calls to Binance
+const binance = new Binance(); // new constructor, why need "new"?
+import dotenv from 'dotenv';
+dotenv.config();
+import promptSync from 'prompt-sync';
+const prompt = promptSync({sigint: true});
 
 async function lunoProcess() {
   let currency = prompt("Enter a valid cryptocurrency: ")// NEW
