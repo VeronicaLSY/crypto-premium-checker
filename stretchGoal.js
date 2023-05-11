@@ -47,13 +47,13 @@ async function lunoProcess() {
   console.log(`Luno premium:`.padEnd(30) + `${lunopremium}%`);
 }
 
-async function looping(){
-  while (true){  
-  await lunoProcess();  
-  setTimeout(lunoProcess, 10000);
+async function looping() {
+  while (true) {
+    await lunoProcess();
+    await new Promise(resolve => setTimeout(resolve, 5000));
   }
 }
 
 looping();
 
-// setInterval(lunoProcess, 10000); // NEW (code is working)
+// OR: setInterval(lunoProcess, 10000); // NEW, but this will keep looping at interval of 10secs despite whether or not the function has completed
