@@ -11,7 +11,7 @@ This is a tool to calculate and display the premium of a cryptocurrency on Luno 
 ## Usage
 
 1. Run the tool using the command `npm start`.
-2. Enter the cryptocurrency symbol when prompted.
+2. Enter the cryptocurrency symbol you want to analyze when prompted.
 
 ## Features
 
@@ -38,3 +38,21 @@ Follow these steps to use a VPN and access restricted services:
 
 5. **Testing and Troubleshooting:**
    Test your application to ensure that it functions properly with the VPN. If you encounter any issues, try different server locations or adjust VPN settings.
+
+## Obtaining API Key for Exchange Rate
+
+To fetch real-time exchange rates, you need an API key from ExchangeRate-API. Follow these steps to obtain your API key:
+
+1. Visit [ExchangeRate-API](https://www.exchangerate-api.com/).
+2. Sign up for an account if you don't have one.
+3. Once logged in, navigate to your account settings or dashboard.
+4. Locate your API key and copy it to your clipboard.
+
+## Configuring Your API Key
+
+1. Create a `.env` file in the root directory of the project.
+2. Open the `.env` file in a text editor.
+3. Add the following line to the file, replacing `YOUR_API_KEY_HERE` with your actual API key: API_KEY=YOUR_API_KEY_HERE
+4. Save and close the `.env` file.
+
+
