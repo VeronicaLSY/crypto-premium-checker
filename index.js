@@ -1,5 +1,3 @@
-// npm install prompt-sync
-
 import { getLunoPriceInMYR } from './lib/luno.js';
 import { getExchangeRate } from './lib/exchange-rate.js';
 import { getBinancePriceInUSD } from './lib/binance.js';
