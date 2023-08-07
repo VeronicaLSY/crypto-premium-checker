@@ -1,45 +1,34 @@
-// npm install -s node-binance-api
-// npm install dotenv
-const Binance = require('node-binance-api'); // making API calls to Binance
-const binance = new Binance(); // new constructor
-require("dotenv").config();
+// npm install prompt-sync
 
-async function lunoProcess() {
-  // BTCMYR price from luno:
-  const luno = await fetch("https://api.luno.com/api/1/ticker?pair=XBTMYR");
-  const lunoResult = await luno.json();
-  const btcMyr = Math.trunc(lunoResult.last_trade);
-  console.log(`BTCMYR price on Luno:`.padEnd(30) + `MYR ${btcMyr}`);
-  
-  // Exchange rate: 
-  const myHeaders = new Headers();
-  myHeaders.append("apikey", process.env.API_VALUE);
-  var requestOptions = {
-    method: 'GET',
-    redirect: 'follow',
-    headers: myHeaders
-  };
-    const conv = await fetch ("https://api.apilayer.com/fixer/latest?symbols=MYR&base=USD", requestOptions);
-    const convResult = await conv.json();
-    const rate = convResult.rates.MYR;
-    console.log(`USDMYR:`.padEnd(30) + `${rate}`);
+import { getLunoPriceInMYR } from './lib/luno.js';
+import { getExchangeRate } from './lib/exchange-rate.js';
+import { getBinancePriceInUSD } from './lib/binance.js';
+import promptSync from 'prompt-sync';
 
-  // BTCUSD price on Luno:
-  const btcUsd = btcMyr/rate;
-  console.log(`BTCUSD price on Luno:`.padEnd(30) + `USD ${btcUsd}`);
-  
-  // BTCUSD price on Binance:
-  const ticker = await binance.prices();
-  const btcbUsd = ticker.BTCUSDT;
-  console.log(`BTCUSD price on Binance:`.padEnd(30) + `USD ${btcbUsd}`);
-  
-  // Price difference:
-  const priceDiff = btcUsd - ticker.BTCUSDT;
-  console.log(`Price difference:`.padEnd(30) + `USD ${priceDiff}`);
+async function getLunoPremium() {
+  while (true) {
+    const prompt = new promptSync({sigint: true});
+    let promptInput = prompt("Enter a valid cryptocurrency:    ")
 
-  // Luno premium:
-  const lunopremium = (priceDiff/btcbUsd).toFixed(4);
-  console.log(`Luno premium:`.padEnd(30) + `${lunopremium}%`);
+    const lunoMYR = await getLunoPriceInMYR(promptInput);
+    console.log(promptInput + `MYR price on Luno:`.padEnd(30) + `MYR ${lunoMYR}`);
+
+    const exchangeRate = await getExchangeRate();
+    console.log(`USDMYR:`.padEnd(33) + `${exchangeRate}`);
+
+    const lunoUSD = lunoMYR / exchangeRate;
+    console.log(promptInput + `USD price on Luno:`.padEnd(30) + `USD ${lunoUSD}`);
+
+    const binanceUSD = await getBinancePriceInUSD(promptInput);
+    console.log(promptInput + `USD price on Binance:`.padEnd(30) + `USD ${binanceUSD}`);
+
+    const priceDiff = lunoUSD - binanceUSD;
+    const lunopremium = (priceDiff / binanceUSD).toFixed(4);
+    console.log(`Price difference:`.padEnd(33) + `USD ${priceDiff}`); 
+    console.log(`Luno premium:`.padEnd(33) + `${lunopremium}%`);
+    
+    await new Promise(resolve => setTimeout(resolve, 5000));
+  }
 }
 
-lunoProcess();
+getLunoPremium();
